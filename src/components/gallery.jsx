@@ -11,25 +11,7 @@ let images = [
   '/images/3.webp',
   '/images/4.webp',
   '/images/5.webp',
-  '/images/6.webp',
-  '/images/1.webp',
-  '/images/2.webp',
-  '/images/3.webp',
-  '/images/4.webp',
-  '/images/5.webp',
-  '/images/6.webp',
-  '/images/1.webp',
-  '/images/2.webp',
-  '/images/3.webp',
-  '/images/4.webp',
-  '/images/5.webp',
-  '/images/6.webp',
-  '/images/1.webp',
-  '/images/2.webp',
-  '/images/3.webp',
-  '/images/4.webp',
-  '/images/5.webp',
-  '/images/6.webp',
+  '/images/6.webp'
 ]
 
 let collapsedAspectRatio = 3 / 2.4
@@ -54,7 +36,7 @@ export default function Page() {
 
   return (
     <MotionConfig transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
-      <div className='h-full bg-black'>
+      <div className='h-screen bg-black'>
         <div className='flex flex-col justify-center h-full mx-auto max-w-7xl'>
           <div className='relative overflow-hidden'>
             <motion.div animate={{ x: `-${index * 100}%` }} className='flex'>
@@ -113,7 +95,7 @@ export default function Page() {
                 }%`,
               }}
               style={{ aspectRatio: fullAspectRatio, gap: `${gap}%` }}
-              className='flex h-14 w-[100px]'
+              className='flex h-14'
             >
               {images.map((image, i) => (
                 <motion.button
@@ -141,7 +123,6 @@ export default function Page() {
                   <motion.img
                     src={image}
                     className='object-cover w-full h-full'
-                    key={image}
                   />
                 </motion.button>
               ))}

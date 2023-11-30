@@ -1,11 +1,10 @@
 import React from 'react'
-
-import Gallery from './components/gallery'
+import ResizablePanel from './components/resizeablePanel'
 
 const App = () => {
   return (
-    <div>
-      <Gallery />
+    <div className='w-screen'>
+      <ResizablePanel />
     </div>
   )
 }
