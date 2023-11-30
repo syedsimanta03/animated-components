@@ -18,7 +18,7 @@ const ResizablePanel = () => {
               <p className='text-lg text-white'>Reset password</p>
             </div>
 
-            <AnimatePresence mode='popLayout'>
+            <AnimatePresence mode='popLayout' initial={false}>
               {(status === 'idle' || status === 'saving') && (
                 <motion.div
                   key='form-container'
