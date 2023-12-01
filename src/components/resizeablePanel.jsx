@@ -3,68 +3,80 @@ import { useState } from 'react'
 import { CheckIcon } from '@heroicons/react/solid'
 import { createContext } from 'react'
 import { useContext } from 'react'
+import useMeasure from 'react-use-measure'
 
-let transition = { type: 'ease', ease: 'easeInOut', duration: 1 }
+let transition = { type: 'ease', ease: 'easeInOut', duration: 0.4 }
 
-const ResizablePanel = () => {
+export default function ResizablePanel() {
   let [status, setStatus] = useState('idle')
+  let [ref, bounds] = useMeasure()
 
   return (
     <MotionConfig transition={transition}>
-      <div className='flex flex-col items-start w-full min-h-screen bg-zinc-900 pt-28'>
+      <div className='flex flex-col items-start min-h-screen bg-zinc-900 pt-28'>
         <div className='w-full max-w-md mx-auto'>
-          <div className='border rounded-2xl border-zinc-700 bg-zinc-800'>
+          <div className='relative overflow-hidden border rounded-2xl border-zinc-700 bg-zinc-800'>
             <div className='px-8 pt-8'>
               <p className='text-lg text-white'>Reset password</p>
             </div>
 
-            <AnimatePresence mode='popLayout' initial={false}>
-              {(status === 'idle' || status === 'saving') && (
-                <motion.div
-                  key='form-container'
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <Form
-                    onSubmit={async () => await delay(1000)}
-                    afterSave={() => setStatus('success')}
-                    className='p-8'
-                  >
-                    <p className='text-sm text-zinc-400'>
-                      Enter your email to get a password reset link:
-                    </p>
-                    <div className='mt-3'>
-                      <input
-                        className='block w-full px-4 py-2 bg-gray-900 border-none rounded text-slate-500'
-                        type='email'
-                        required
-                        defaultValue='sam@designcoder.rocks'
-                      />
-                    </div>
-                    <div className='mt-8 text-right'>
-                      <Form.Button className='px-5 py-2 text-sm font-medium text-white bg-indigo-500 rounded '>
-                        Email me my link
-                      </Form.Button>
-                    </div>
-                  </Form>
-                </motion.div>
-              )}
-
-              {status === 'success' && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ ...transition, delay: 0.5 }}
-                  key='form-exit'
-                  className='p-8 text-sm text-zinc-400'
-                >
-                  Email sent! Check your inbox to continue.
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <motion.div
+              animate={{ height: bounds.height > 0 ? bounds.height : null }}
+              transition={{ type: 'spring', bounce: 0.2, duration: 0.8 }}
+            >
+              <div ref={ref}>
+                <AnimatePresence mode='popLayout'>
+                  {status === 'idle' || status === 'saving' ? (
+                    <motion.div
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        ...transition,
+                        duration: transition.duration / 2,
+                      }}
+                      key='form'
+                    >
+                      <Form
+                        onSubmit={async () => await delay(1000)}
+                        afterSave={() => setStatus('success')}
+                        className='p-8'
+                      >
+                        <p className='text-sm text-zinc-400'>
+                          Enter your email to get a password reset link:
+                        </p>
+                        <div className='mt-3'>
+                          <input
+                            className='block w-full px-4 py-2 border-none rounded text-slate-900'
+                            type='email'
+                            required
+                            defaultValue='sam@buildui.com'
+                          />
+                        </div>
+                        <div className='mt-8 text-right'>
+                          <Form.Button className='px-5 py-2 text-sm font-medium text-white bg-indigo-500 rounded '>
+                            Email me my link
+                          </Form.Button>
+                        </div>
+                      </Form>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{
+                        ...transition,
+                        duration: transition.duration / 2,
+                        delay: transition.duration / 2,
+                      }}
+                    >
+                      <p className='p-8 text-sm text-zinc-400'>
+                        Email sent! Check your inbox to continue.
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
           </div>
-
           <p className='mt-8 text-sm text-zinc-500'>
             <span className='underline'>Reach out</span> to us if you need more
             help.
@@ -74,6 +86,7 @@ const ResizablePanel = () => {
     </MotionConfig>
   )
 }
+
 let formContext = createContext()
 
 function Form({ onSubmit, afterSave, children, ...props }) {
@@ -238,5 +251,3 @@ function Spinner({ className, ...rest }) {
 async function delay(ms) {
   await new Promise((resolve) => setTimeout(resolve, ms))
 }
-
-export default ResizablePanel
